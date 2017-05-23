@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
 import Header from './components/Header'
 import FormInput from './components/FormInput'
+import RegistrationStore from './stores/RegistrationStore'
+
 class App extends Component {
   constructor(props){
     super(props)
     this.state={
-      registration: {
-        firstName:'',
-        lastName:'',
-        email:'',
-        password:''
+      registration: RegistrationStore.getFields(),
+      errors: {}
       }
     }
-  }
+
 
   handleChange(event){
     const target = event.target
@@ -22,10 +21,17 @@ class App extends Component {
       registration: registration
     })
   }
-
+  validate(){
+    RegistrationStore.validate()
+    this.setState({errors: RegistrationStore.getErrors()})
+  }
   handleSubmit(event){
     event.preventDefault()
-    console.log(this.state.registration)
+    this.validate()
+  }
+
+  isValid(){
+    return Object.keys(this.state.errors).length === 0
   }
 
   render() {
@@ -37,6 +43,11 @@ class App extends Component {
             <div className='col-xs-6 col-xs-offset-3'>
               <div className='panel panel-default'>
                 <div className='panel-body'>
+                { !this.isValid() &&
+                <div className='alert alert-danger'>
+                  please verify all fields are filled below
+                  </div>
+                }
                   <h3>Registration</h3>
                   <form onSubmit={this.handleSubmit.bind(this)}>
                     <div className='row'>
@@ -46,6 +57,7 @@ class App extends Component {
                           label='First Name'
                           value={this.state.registration.firstName}
                           onChange={this.handleChange.bind(this)}
+                          errors={this.state.errors.firstName}
                         />
                       </div>
                     </div>
@@ -57,6 +69,7 @@ class App extends Component {
                           label='Last Name'
                           value={this.state.registration.lastName}
                           onChange={this.handleChange.bind(this)}
+                          errors={this.state.errors.lastName}
                         />
                       </div>
                     </div>
@@ -68,6 +81,7 @@ class App extends Component {
                           label='Email'
                           value={this.state.registration.email}
                           onChange={this.handleChange.bind(this)}
+                          errors={this.state.errors.email}
                         />
                       </div>
                     </div>
@@ -80,6 +94,7 @@ class App extends Component {
                         label='Password'
                         value={this.state.registration.password}
                         onChange={this.handleChange.bind(this)}
+                        errors={this.state.errors.password}
                         />
                       </div>
                     </div>

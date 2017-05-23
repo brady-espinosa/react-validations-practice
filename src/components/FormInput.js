@@ -9,7 +9,7 @@ export default class FormInput extends Component {
   }
   render(){
     return(
-      <div className='form-group'>
+      <div className={`form-group ${this.props.errors && 'has-error'}`}>
         <label
           htmlFor={this.props.name}
           className='control-label'
@@ -23,6 +23,9 @@ export default class FormInput extends Component {
           onChange={this.props.onChange}
           className='form-control'
         />
+        {this.props.errors &&
+          <div className='help-block'>{this.props.errors}</div>
+        }
       </div>
     )
   }
